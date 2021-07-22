@@ -135,7 +135,8 @@ cmd_getpin()
 			${error:+--field="$error:LBL"} \
 			--button="${labelok:-$def_labelok}:0" \
 			--button="${labelcancel:-$def_labelcancel}:1" \
-			--timeout="${timeout:-0}"
+			--timeout="${timeout:-0}" \
+			</dev/null
 	)" || ret=$?
 
 	error=''
@@ -162,7 +163,8 @@ cmd_getpin()
 				${error:+--field="$error:LBL"} \
 				--button="${labelok:-$def_labelok}:0" \
 				--button="${labelcancel:-$def_labelcancel}:1" \
-				--timeout="${timeout:-0}"
+				--timeout="${timeout:-0}" \
+				</dev/null
 		)" || ret=$?
 
 		repeatpassword="${repeatpassword#$'\n'}"
@@ -195,7 +197,8 @@ cmd_confirm()
 			--title="${title:-$def_title}" \
 			--text="${1:-${desc:-$def_desc}}" \
 			--button="${labelok:-$def_labelok}:0" \
-			--timeout="${timeout:-0}" ||
+			--timeout="${timeout:-0}" \
+			< /dev/null ||
 			ret=$?
 	else
 		yad \
@@ -203,7 +206,8 @@ cmd_confirm()
 			--title="${title:-$def_title}" \
 			--text="${1:-${desc:-$def_desc}}" \
 			${error:+--field="$error:LBL"} \
-			--timeout="${timeout:-0}" ||
+			--timeout="${timeout:-0}" \
+			< /dev/null ||
 			ret=$?
 	fi
 
