@@ -176,29 +176,23 @@ cmd_getpin()
 
 cmd_confirm()
 {
-	local ret
+	local ret=0 showmsg='' showcfm=1
 
-	ret=0
 	if [ "$1" = '--one-button' ]; then
 		shift
-		yad \
-			--splash \
-			--title="${title:-$def_title}" \
-			--text="${1:-${desc:-$def_desc}}" \
-			--button="${labelok:-$def_labelok}:0" \
-			--timeout="${timeout:-0}" \
-			< /dev/null ||
-			ret=$?
-	else
-		yad \
-			--splash \
-			--title="${title:-$def_title}" \
-			--text="${1:-${desc:-$def_desc}}" \
-			${error:+--field="$error:LBL"} \
-			--timeout="${timeout:-0}" \
-			< /dev/null ||
-			ret=$?
+		showmsg=1
+		showcfm=
 	fi
+
+	yad \
+		--splash \
+		--title="${title:-$def_title}" \
+		--text="${1:-${desc:-$def_desc}}" \
+		${showmsg:+--button="${labelok:-$def_labelok}:0"} \
+		${showcfm:+${error:+--field="$error:LBL"}} \
+		--timeout="${timeout:-0}" \
+		< /dev/null ||
+		ret=$?
 
 	set_error='' error=''
 
