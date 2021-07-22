@@ -121,10 +121,10 @@ cmd_getinfo()
 
 cmd_getpin()
 {
-	local ret password
+	local ret=0 result output password=1 repeatpassword=3
 
-	ret=0
-	password="$(
+	output="$(
+		echo -n "|"
 		yad \
 			--splash \
 			--title="${title:-$def_title}" \
@@ -132,44 +132,33 @@ cmd_getpin()
 			--separator="\n" \
 			--field="${desc:-$def_desc}:LBL" \
 			--field="${prompt:-$def_prompt}:H" \
+			${set_repeat:+--field="${repeat:-$def_repeat}:LBL"} \
+			${set_repeat:+--field="${prompt-$def_prompt}:H"} \
 			${error:+--field="$error:LBL"} \
 			--button="${labelok:-$def_labelok}:0" \
 			--button="${labelcancel:-$def_labelcancel}:1" \
 			--timeout="${timeout:-0}" \
-			</dev/null
+			</dev/null || ret=$?
+		echo -n "|"
+		exit $ret
 	)" || ret=$?
 
-	error=''
-
-	password="${password#$'\n'}"
+	set_error='' error=''
 
 	case "$ret" in
 		1)  assuan_result $GPG_ERR_CANCELED; return 0; ;;
 		70) assuan_result $GPG_ERR_TIMEOUT;  return 0; ;;
 	esac
 
+	output="${output#|}"
+	output="${output%|}"
+
+	readarray -t result <<<"$output"
+
 	if [ -n "${set_repeat-}" ]; then
-		local repeatpassword
+		set_repeat='' repeat=''
 
-		ret=0
-		repeatpassword="$(
-			yad \
-				--splash \
-				--title="${title:-$def_title}" \
-				--form \
-				--separator="\n" \
-				--field="${repeat:-$def_repeat}:LBL" \
-				--field="${prompt-$def_prompt}:H" \
-				${error:+--field="$error:LBL"} \
-				--button="${labelok:-$def_labelok}:0" \
-				--button="${labelcancel:-$def_labelcancel}:1" \
-				--timeout="${timeout:-0}" \
-				</dev/null
-		)" || ret=$?
-
-		repeatpassword="${repeatpassword#$'\n'}"
-
-		if [ "$password" != "$repeatpassword" ]; then
+		if [ "${result[$password]}" != "${result[$repeatpassword]}" ]; then
 			cmd_confirm --one-button "${repeaterror:-Error: Passwords did not match.}"
 			assuan_result $GPG_ERR_NOT_CONFIRMED
 			return
@@ -181,7 +170,7 @@ cmd_getpin()
 	[ -z "$touch_file" ] ||
 		touch "$touch_file"
 
-	echo "D $password"
+	echo "D ${result[$password]}"
 	assuan_result $GPG_ERR_NO_ERROR
 }
 
