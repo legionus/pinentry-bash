@@ -66,12 +66,7 @@ cmd_setkeyinfo()
 
 set_text_variable()
 {
-	local m="$2"
-	m="${m//%/\\x}"
-	m="${m//&/&amp;}"
-	m="${m//</&lt;}"
-	m="${m//>/&gt;}"
-	printf -v "$1" "$m"
+	printf -v "$1" "${2//%/\\x}"
 	eval "set_$1=1"
 	assuan_result $GPG_ERR_NO_ERROR
 }
@@ -127,6 +122,7 @@ cmd_getpin()
 		echo -n "|"
 		yad \
 			--splash \
+			--no-markup \
 			--title="${title:-$def_title}" \
 			--form \
 			--separator="\n" \
@@ -186,6 +182,7 @@ cmd_confirm()
 
 	yad \
 		--splash \
+		--no-markup \
 		--title="${title:-$def_title}" \
 		--text="${1:-${desc:-$def_desc}}" \
 		${showmsg:+--button="${labelok:-$def_labelok}:0"} \
