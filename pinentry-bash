@@ -148,6 +148,7 @@ cmd_getpin()
 	output="${output%|}"
 
 	readarray -t result <<<"$output"
+	output=''
 
 	if [ -n "${set_repeat-}" ]; then
 		set_repeat='' repeat=''
@@ -156,9 +157,8 @@ cmd_getpin()
 			cmd_confirm --one-button "${repeaterror:-Error: Passwords did not match.}"
 			assuan_result $GPG_ERR_NOT_CONFIRMED
 			return
-		else
-			echo "S PIN_REPEATED"
 		fi
+		echo "S PIN_REPEATED"
 	fi
 
 	[ -z "$touch_file" ] ||
