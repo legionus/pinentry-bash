@@ -103,9 +103,7 @@ cmd_getinfo()
 			assuan_result $GPG_ERR_NO_ERROR
 			;;
 		ttyinfo)
-			local ttyname
-			ttyname="$(tty)" || ttyname="/dev/console"
-			echo "D - - - $ttyname $(id -u)/$(id -g) -"
+			echo "D - - - - $(id -u 2>/dev/null || echo 0)/$(id -g 2>/dev/null || echo 0) -"
 			assuan_result $GPG_ERR_NO_ERROR
 			;;
 		*)
@@ -221,15 +219,15 @@ while :; do
 		SETTIMEOUT)     cmd_settimeout "$args" ;;
 		SETKEYINFO)     cmd_setkeyinfo "$args" ;;
 		OPTION)         cmd_setoption "$args" ;;
-		SETDESC)        set_text_variable desc "$args"		;;
-		SETPROMPT)      set_text_variable prompt "$args"	;;
-		SETTITLE)       set_text_variable title "$args"		;;
-		SETOK)          set_text_variable labelok "$args"	;;
-		SETCANCEL)      set_text_variable labelcancel "$args"	;;
-		SETNOTOK)       set_text_variable labelnotok "$args"	;;
-		SETERROR)       set_text_variable error "$args"		;;
-		SETREPEAT)      set_text_variable repeat "$args"	;;
-		SETREPEATERROR) set_text_variable repeaterror "$args"	;;
+		SETDESC)        set_text_variable desc "$args" ;;
+		SETPROMPT)      set_text_variable prompt "$args" ;;
+		SETTITLE)       set_text_variable title "$args" ;;
+		SETOK)          set_text_variable labelok "$args" ;;
+		SETCANCEL)      set_text_variable labelcancel "$args" ;;
+		SETNOTOK)       set_text_variable labelnotok "$args" ;;
+		SETERROR)       set_text_variable error "$args" ;;
+		SETREPEAT)      set_text_variable repeat "$args" ;;
+		SETREPEATERROR) set_text_variable repeaterror "$args" ;;
 		*)
 			assuan_result $GPG_ERR_NO_ERROR
 			;;
